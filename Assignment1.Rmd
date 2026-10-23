@@ -1,0 +1,151 @@
+---
+title: "Data Analysis using R"
+author: "Karishma Gupta"
+date: "2026-10-23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+
+# Assignment 1 - Data Analysis using R Programming
+
+# Import dataset
+healthcare_dataset <- read.csv("healthcare_dataset.csv")
+
+# View first few rows
+head(healthcare_dataset)
+
+# 1. Print structure of Dataset
+str(healthcare_dataset)
+
+# 2. List of variables in Dataset
+names(healthcare_dataset)
+
+# 3. Print top 15 rows of Dataset
+head(healthcare_dataset, 15)
+
+# 4. User-defined function using a variable from the dataset
+age_group <- function(age) 
+  {
+  if (age >= 65) {
+    return("Senior")
+  } else {
+    return("Adult")
+  }
+}
+# Test the function
+age_group(70)
+
+# 5. Filter rows
+library(dplyr)
+
+senior_patients <- healthcare_dataset %>% filter(Age >= 65)
+
+head(senior_patients)
+
+# 6. Dependent and independent variables
+
+# Independent variable
+age_data <- healthcare_dataset["Age"]
+
+# Dependent variable
+billing_data <- healthcare_dataset["Billing.Amount"]
+
+# Combine both variables
+healthcare_analysis <- cbind(age_data, billing_data)
+# Display the new data frame
+head(healthcare_analysis)
+
+# 7. Check for missing values
+sum(is.na(healthcare_dataset))
+# No missing values were found, so no rows were removed
+
+# 8. Check for duplicated rows
+sum(duplicated(healthcare_dataset))
+
+# 8A  Extra step -Remove duplicated rows
+healthcare_clean <- healthcare_dataset %>% distinct()
+nrow(healthcare_clean)
+
+# 9. Reorder rows by Billing Amount in descending order
+healthcare_sorted <- healthcare_clean %>% arrange(desc(Billing.Amount))
+head(healthcare_sorted, 10)
+
+# 10. Rename columns
+healthcare_renamed <- healthcare_clean %>% rename(
+Billing_Amount = Billing.Amount,
+Medical_Condition = Medical.Condition
+)
+names(healthcare_renamed)
+
+# 11. Create a new variable using a mathematical function
+healthcare_new <- healthcare_renamed %>% mutate(Billing_Double = Billing_Amount * 2)
+head(healthcare_new)
+
+# 12. Create a training set using random sampling
+
+set.seed(123)
+
+training_data <- healthcare_new %>% sample_frac(0.80)
+nrow(training_data)
+
+# 13. Summary statistics
+summary(healthcare_new)
+
+# 14. Mean of Age
+mean(healthcare_new$Age)
+
+# 15. Median of Age
+median(healthcare_new$Age)
+
+# 16. Mode of Age
+get_mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+get_mode(healthcare_new$Age)
+
+# 17. Range of Age
+range(healthcare_new$Age)
+
+# 18. Scatter plot
+library(ggplot2)
+
+ggplot(healthcare_new, aes(x = Age, y = Billing_Amount)) + geom_point(color= "blue")
+
+# 19. Bar plot (1 variable)
+ggplot(healthcare_new, aes(x = Medical_Condition)) + geom_bar(fill = "steelblue")
+
+# 19A. Bar plot using two variables
+ggplot(healthcare_new, aes(x = Medical_Condition, fill = Admission.Type)) +
+  geom_bar(position = "dodge")
+
+# 20. Pearson correlation
+cor(healthcare_new$Age, healthcare_new$Billing_Amount, method = "pearson")
+
+```
