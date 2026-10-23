@@ -2,7 +2,7 @@
 # Assignment 1 - Data Analysis using R Programming
 
 # Import dataset
-healthcare_dataset <- read.csv("D:/HEALTH INFORMATICS SEM 2/ESTER- COMP 4033- HEALTH INFORMATION SYSTEMS ANALYSIS AND EVALUATION/Ass#/healthcare_dataset.csv")
+healthcare_dataset <- read.csv("healthcare_dataset.csv")
 
 # View first few rows
 head(healthcare_dataset)
